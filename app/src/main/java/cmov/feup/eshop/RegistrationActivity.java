@@ -118,8 +118,14 @@ public class RegistrationActivity extends AppCompatActivity{
         name = ((EditText)findViewById(R.id.nameTxt)).getText().toString();
 
         if(name.isEmpty()){
-            Toast.makeText(this, "You must enter the name!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "You must enter the name!", Toast.LENGTH_SHORT).show();
         }
+        else{
+
+        }
+        //TODO change this
+        Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
+        RegistrationActivity.this.startActivity(next);
 
     }
 
