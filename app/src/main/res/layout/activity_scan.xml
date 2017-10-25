@@ -8,6 +8,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
 android:background="#e0e0e0"
+
 android:orientation="vertical"
 tools:context="cmov.feup.eshop.ScanActivity">
 <android.support.v7.widget.RecyclerView
@@ -45,21 +46,25 @@ tools:context="cmov.feup.eshop.ScanActivity">
         android:textColor="#414141"
         android:text="yet..."/>
 </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/message" />
+    </LinearLayout>
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:gravity="center"
     android:layout_margin="8dp"
-    android:orientation="vertical">
-
-
-
-    <TextView
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/message" />
+    android:orientation="vertical"
+    android:layout_alignParentRight="true">
 
     <include layout="@layout/fabs_layout">
 

@@ -20,6 +20,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -135,14 +138,17 @@ public class ScanActivity extends AppCompatActivity {
 
 
     public void Onfab1Click(View view){
-        if(menuOn == false){
-            displayFABMenu();
-            menuOn = !menuOn;
+        if(!hide_fab_2.hasStarted() && !show_fab_2.hasStarted() || hide_fab_2.hasEnded() || show_fab_2.hasEnded() ){
+            if(menuOn == false){
+                displayFABMenu();
+                menuOn = !menuOn;
+            }
+            else{
+                hideFABMenu();
+                menuOn = !menuOn;
+            }
         }
-        else{
-            hideFABMenu();
-            menuOn = !menuOn;
-        }
+
     }
 
     @Override
@@ -183,13 +189,29 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 
-                message.setText("Format: " + format + "\nMessage: " + contents);
+                //message.setText("Format: " + format + "\nMessage: " + contents);
+                new LovelyTextInputDialog(this)
+                        .setTopColorRes(R.color.colorPrimary)
+                        .setTitle("Format:" + format)
+                        .setMessage("Code type:" + contents)
+                        .setIcon(R.drawable.logo_wo)
+                        .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                            @Override
+                            public void onTextInputConfirmed(String text) {
+                                Toast.makeText(ScanActivity.this, "Add action", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+
             }
         }
+
+
     }
 }
