@@ -6,23 +6,34 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cmov.feup.eshop.model.Order;
+import cmov.feup.eshop.model.Product;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -32,12 +43,20 @@ public class ScanActivity extends AppCompatActivity {
     Animation hide_fab_3,hide_fab_2;
     boolean menuOn = false;
 
+
+
+    List<Order> orderList = new ArrayList<>();
+    RecyclerView mRecyclerView;
+    OrderAdapter orderAdapter;
+
+
     LinearLayout fab2;
     FloatingActionButton fab3;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         FloatingActionButton barButton,QRButton;
+
 
 
         super.onCreate(savedInstanceState);
@@ -76,6 +95,19 @@ public class ScanActivity extends AppCompatActivity {
 
         FrameLayout.LayoutParams layoutParams3 = (FrameLayout.LayoutParams) fab3.getLayoutParams();
         layoutParams3.topMargin += (int) (fab3.getHeight() * 1.25);
+
+        setupOrderRV();
+    }
+
+    public void setupOrderRV(){
+        getOrders();
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.rv);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        orderAdapter = new OrderAdapter();
+        mRecyclerView.setAdapter(orderAdapter);
+        //mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new OnItemClickListener()));
+
     }
 
     public void displayFab2(){
@@ -204,7 +236,15 @@ public class ScanActivity extends AppCompatActivity {
                         .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
                             @Override
                             public void onTextInputConfirmed(String text) {
+                                int quantity = 0;
+                                if(!text.isEmpty()){
+                                    quantity = Integer.parseInt(text);
+                                }
+                                //TODO change hardcoded decription to one obtained from server
+                                Product p = new Product("Product decrription");
                                 Toast.makeText(ScanActivity.this, "Add action", Toast.LENGTH_SHORT).show();
+                                addOrder(p,quantity);
+
                             }
                         })
                         .show();
@@ -214,4 +254,220 @@ public class ScanActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    //-------------------------------product adapter things ---------------------------------
+
+    //TODO change offer to product write new function for rest connection
+
+    public void getOrders(){
+        /*
+            RestConnector.getWishById(this, wish.getIdWish(), 0, 5, new VolleyCallback<Wish>() {
+                @Override
+                public void onSuccessResponse(Wish result) {
+                    if(result != null){
+                        if(!result.getOfferList().isEmpty()){
+                            orderList.addAll(result.getOfferList());
+                            orderAdapter.notifyDataSetChanged();
+                            orderAdapter.setLoaded();
+                        }
+                        else{
+                            //Toast.makeText(WishDetailsActivity.this, "No offers", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        //Toast.makeText(WishDetailsActivity.this, "No offers", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+    */
+
+        //TODO change later
+
+
+        //orderList.addAll(orderList);
+        //orderAdapter.notifyDataSetChanged();
+        //orderAdapter.setLoaded();
+
+    }
+
+
+    public void addOrder(Product newProduct, int quantity){
+
+        /*
+        //TODO UCINI STA OCES S OFFEROM
+        if(SessionManager.getCurrentUserProfile() != null){
+            if(SessionManager.getCurrentUserProfile().getProfilePicture() != null){
+                Offer newOffer = new Offer(wish.getIdWish(),SessionManager.getCurrentUserProfile().getIdUser(),str);
+                RestConnector.createOffer(this, newOffer, new VolleyCallback<Offer>() {
+                    @Override
+                    public void onSuccessResponse(Offer result) {
+                        if(result != null){
+                            mOffers.clear();
+                            getOrders();
+                        }
+                        else {
+                            Toast.makeText(WishDetailsActivity.this, "Error while adding new offer", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }
+        */
+        Order newOrder = new Order(newProduct,quantity);
+        orderList.add(newOrder);
+        orderAdapter.notifyDataSetChanged();
+        orderAdapter.setLoaded();
+
+        LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
+        l.setVisibility(View.GONE);
+
+    }
+
+
+//ZA RECYCLER VIEW
+class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public TextView orderDescription;
+    public ExpandableLinearLayout expandableLayout;
+    public Button showDetailsButton;
+    public boolean opened = false;
+
+    public OrderViewHolder(View itemView) {
+        super(itemView);
+        orderDescription = (TextView) itemView.findViewById(R.id.orderTxt);
+        expandableLayout = (ExpandableLinearLayout) itemView.findViewById(R.id.expandableLayout);
+        showDetailsButton = (Button)itemView.findViewById(R.id.acceptOfferBtn);
+        showDetailsButton.setVisibility(View.VISIBLE);
+        itemView.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v){
+        if(!opened){
+            opened=true;
+            orderDescription.setMaxLines(10);
+        }else{
+            opened=false;
+            orderDescription.setMaxLines(4);
+        }
+        expandableLayout.toggle();
+    }
+
+}
+
+class LoadingViewHolder extends RecyclerView.ViewHolder {
+    public ProgressBar progressBar;
+
+
+    public LoadingViewHolder(View itemView) {
+        super(itemView);
+        //TODO add ProgressBar element to xml
+        progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
+    }
+}
+
+
+class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
+    private OnLoadMoreListener mOnLoadMoreListener;
+
+    private boolean isLoading;
+    //TODO adjust after
+    private int visibleThreshold = 5;
+    private int lastVisibleItem, totalItemCount;
+
+    private int lastPosition = -1;
+
+    public OrderAdapter() {
+
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                totalItemCount = linearLayoutManager.getItemCount();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    if (mOnLoadMoreListener != null) {
+                        mOnLoadMoreListener.onLoadMore();
+                    }
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    /*
+    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
+        this.mOnLoadMoreListener = mOnLoadMoreListener;
+    }
+    */
+
+    @Override
+    public int getItemViewType(int position) {
+        return orderList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_ITEM) {
+            View view = LayoutInflater.from(ScanActivity.this).inflate(R.layout.layout_product_item, parent, false);
+            return new OrderViewHolder(view);
+        } else if (viewType == VIEW_TYPE_LOADING) {
+            View view = LayoutInflater.from(ScanActivity.this).inflate(R.layout.layout_loading_item, parent, false);
+            return new LoadingViewHolder(view);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        Log.d("------>",holder.toString());
+        if (holder instanceof OrderViewHolder) {
+            Order order = orderList.get(position);
+            final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
+            //Log.d("OFFER-",offer.getOfferDesription());
+            //TODO add quantity in xml and bind it here with real data
+            orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
+            orderViewHolder.setIsRecyclable(false);
+            orderViewHolder.expandableLayout.setInRecyclerView(true);
+
+        } else if (holder instanceof LoadingViewHolder) {
+            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
+            loadingViewHolder.progressBar.setIndeterminate(true);
+        }
+        // Ovo je za animiranje ulaska
+        setAnimation(holder.itemView, position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return orderList == null ? 0 : orderList.size();
+    }
+
+    public void setLoaded() {
+        isLoading = false;
+    }
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // animiraj
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(ScanActivity.this, R.anim.fade_in);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+    }
+
+}
+
+
+
 }

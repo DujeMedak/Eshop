@@ -11,40 +11,47 @@ android:background="#e0e0e0"
 
 android:orientation="vertical"
 tools:context="cmov.feup.eshop.ScanActivity">
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/rv"
-    android:layout_marginTop="-9dp"
-    android:clipToPadding="false"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</android.support.v7.widget.RecyclerView>
-
 <RelativeLayout
     android:id="@+id/noWishesLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_patter_no_wishes_tiled"
     android:gravity="center">
-    <TextView
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_marginTop="9dp"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
-        android:id="@+id/text1"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="36dp"
-        android:fontFamily="sans-serif-thin"
-        android:textAllCaps="true"
-        android:textColor="#2d2d2d"
-        android:text="You don't have\nany products"/>
-    <TextView
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/noOrdersTxt"
         android:layout_width="match_parent"
-        android:layout_below="@id/text1"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="18dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif-light"
-        android:textColor="#414141"
-        android:text="yet..."/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/text1"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="36dp"
+            android:fontFamily="sans-serif-thin"
+            android:textAllCaps="true"
+            android:textColor="#2d2d2d"
+            android:text="You don't have\nany products"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_below="@id/text1"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="#414141"
+            android:text="yet..."/>
+    </LinearLayout>
+
 </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
