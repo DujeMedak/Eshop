@@ -23,8 +23,7 @@
                     android:id="@+id/imageView"
                     android:layout_width="102dp"
                     android:layout_height="103dp"
-                    android:background="@drawable/logo"
-                    android:transitionName="logo"
+                    android:background="@drawable/logo2_256px"
                     android:layout_weight="0.12" />
 
                 <RelativeLayout

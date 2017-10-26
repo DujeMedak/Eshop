@@ -70,6 +70,8 @@
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/ic_thumb_up_green_32dp"/>
                     <Button
+                        android:id="@+id/button_delete_order"
+                        android:onClick="onDeleteOrderClick"
                         android:layout_width="wrap_content"
                         android:background="@android:color/transparent"
                         android:layout_marginLeft="24dp"

@@ -168,6 +168,10 @@ public class ScanActivity extends AppCompatActivity {
         hideFab2();
     }
 
+    public void onDeleteOrderClick(View view){
+
+    }
+
 
     public void Onfab1Click(View view){
         if(!hide_fab_2.hasStarted() && !show_fab_2.hasStarted() || hide_fab_2.hasEnded() || show_fab_2.hasEnded() ){
@@ -234,7 +238,7 @@ public class ScanActivity extends AppCompatActivity {
                         .setTopColorRes(R.color.colorPrimary)
                         .setTitle("Format:" + format + " Code type:" + contents)
                         .setMessage("Enter quantity")
-                        .setIcon(R.drawable.logo_wo)
+                        .setIcon(R.drawable.logo2_256px)
                         .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
                             @Override
                             public void onTextInputConfirmed(String text) {
@@ -334,6 +338,18 @@ public class ScanActivity extends AppCompatActivity {
         LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
         l.setVisibility(View.GONE);
 
+    }
+
+    public void removeOrderFromList(int index){
+        if(orderList.size() > index){
+            orderList.remove(index);
+            orderAdapter.notifyDataSetChanged();
+            orderAdapter.setLoaded();
+            if(orderList.size() == 0){
+                LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
+                l.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
