@@ -9,7 +9,7 @@ public class Product {
     String description;
 
     public String getProductDescription(){
-        return "product description";
+        return this.description;
     }
 
     public Product(String description){

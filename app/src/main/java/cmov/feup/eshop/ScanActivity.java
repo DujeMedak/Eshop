@@ -224,25 +224,26 @@ public class ScanActivity extends AppCompatActivity {
 
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
+                final String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 
                 //message.setText("Format: " + format + "\nMessage: " + contents);
-                new LovelyTextInputDialog(this)
+
+
+                new LovelyTextInputDialog(this).setNegativeButton("Cancel",null)
                         .setTopColorRes(R.color.colorPrimary)
-                        .setTitle("Format:" + format)
-                        .setMessage("Code type:" + contents)
+                        .setTitle("Format:" + format + " Code type:" + contents)
+                        .setMessage("Enter quantity")
                         .setIcon(R.drawable.logo_wo)
                         .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
                             @Override
                             public void onTextInputConfirmed(String text) {
                                 int quantity = 0;
-                                if(!text.isEmpty()){
-                                    quantity = Integer.parseInt(text);
+                                if (tryParseInt(text)) {
+                                    quantity=Integer.parseInt(text);  // We now know that it's safe to parse
                                 }
                                 //TODO change hardcoded decription to one obtained from server
-                                Product p = new Product("Product decrription");
-                                Toast.makeText(ScanActivity.this, "Add action", Toast.LENGTH_SHORT).show();
+                                Product p = new Product("Product:"+contents);
                                 addOrder(p,quantity);
 
                             }
@@ -253,6 +254,15 @@ public class ScanActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 
@@ -329,17 +339,16 @@ public class ScanActivity extends AppCompatActivity {
 
 //ZA RECYCLER VIEW
 class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public TextView orderQuantity;
     public TextView orderDescription;
     public ExpandableLinearLayout expandableLayout;
-    public Button showDetailsButton;
     public boolean opened = false;
 
     public OrderViewHolder(View itemView) {
         super(itemView);
         orderDescription = (TextView) itemView.findViewById(R.id.orderTxt);
+        orderQuantity = (TextView) itemView.findViewById(R.id.quantityTxt);
         expandableLayout = (ExpandableLinearLayout) itemView.findViewById(R.id.expandableLayout);
-        showDetailsButton = (Button)itemView.findViewById(R.id.acceptOfferBtn);
-        showDetailsButton.setVisibility(View.VISIBLE);
         itemView.setOnClickListener(this);
     }
     @Override
@@ -430,10 +439,14 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Log.d("------>",holder.toString());
         if (holder instanceof OrderViewHolder) {
+            Log.d("______>------------>",holder.toString());
             Order order = orderList.get(position);
             final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
+
+            Log.d("______>------->desc:::",order.getProduct().getProductDescription());
             //Log.d("OFFER-",offer.getOfferDesription());
             //TODO add quantity in xml and bind it here with real data
+            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()));
             orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
             orderViewHolder.setIsRecyclable(false);
             orderViewHolder.expandableLayout.setInRecyclerView(true);

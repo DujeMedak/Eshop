@@ -13,6 +13,10 @@ public class Order {
         quantity = q;
     }
 
+    public int getQuantity(){
+        return quantity;
+    }
+
     public Product getProduct(){
         return p;
     }
