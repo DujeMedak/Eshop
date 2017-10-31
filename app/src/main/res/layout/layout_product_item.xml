@@ -23,28 +23,50 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/topLay"
                     android:layout_width="match_parent"
-                    android:padding="10dp"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/quantityTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12"/>
-                    <TextView
-                        android:id="@+id/orderTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="6dp"
-                        android:maxLines="4"
-                        android:textSize="13sp"
-                        android:text="some description"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/quantityTxt"
-                        android:layout_centerVertical="true"/>
-                </RelativeLayout>
+                    android:padding="8dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/quantityTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="6dp"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:text="12 x order(product name)"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/orderTxt"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="6dp"
+                            android:maxLines="2"
+                            android:textSize="13sp"
+                            android:text="some description"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/quantityTxt"
+                            android:layout_centerVertical="true"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/arrow_down_drop_circle_outline"
+                            android:layout_toRightOf="@+id/orderTxt"
+                            android:layout_gravity="bottom"
+                            android:layout_centerVertical="true"/>
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
             <com.github.aakira.expandablelayout.ExpandableLinearLayout
                 android:id="@+id/expandableLayout"
@@ -58,41 +80,78 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_margin="2dp"
-                    android:orientation="horizontal">
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:text="Add"
-                        android:textColor="@color/upvoteBtnColor"
-                        android:drawablePadding="12dp"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center_horizontal"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Price:"
+                                android:layout_gravity="center"
+                                android:textSize="15sp"
+                                />
+                            <TextView
+                                android:id="@+id/orderPriceTxt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text=" 7 x 5.99 = "
+                                android:textSize="15sp"
+                                />
+                            <TextView
+                                android:id="@+id/orderPriceTotalTxt"
+
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:textSize="25sp"
+                                android:text="41.93 €"
+                                />
+                        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/ic_thumb_up_green_32dp"/>
-                    <Button
-                        android:id="@+id/button_delete_order"
-                        android:onClick="onDeleteOrderClick"
-                        android:layout_width="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:layout_marginLeft="24dp"
-                        android:text="Delete"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="12dp"
-                        android:drawableRight="@drawable/ic_report_red_32dp"/>
+                        android:gravity="center"
+                        android:layout_margin="2dp"
+                        android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/button_delete_order"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="REMOVE"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:backgroundTint="@color/colorPrimaryDark"
+                            android:layout_marginRight="8dp"
+                            android:drawableRight="@drawable/ic_report_red_32dp"
+                            android:layout_marginLeft="8dp"/>
+                        <Button
+                            android:id="@+id/button_edit_order"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="EDIT"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:layout_toRightOf="@+id/button_delete_order"
+                            android:backgroundTint="@color/upvoteBtnColor"
+                            android:layout_marginRight="8dp"
+                            android:drawableRight="@drawable/pencil"
+                            android:layout_marginLeft="8dp"/>
+                    </LinearLayout>
                 </LinearLayout>
-                <Button
-                    android:id="@+id/acceptOfferBtn"
-                    android:visibility="visible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="SEE DETAILS"
-                    android:backgroundTint="@color/upvoteBtnColor"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:textColor="#fff"
-                    android:textStyle="bold"/>
 
             </com.github.aakira.expandablelayout.ExpandableLinearLayout>
         </RelativeLayout>

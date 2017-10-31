@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#ffffff"
     android:orientation="vertical" >
-    <ProgressBar
+    <!--<ProgressBar
         android:id="@+id/progressBar1"
         android:layout_width="match_parent"
         android:paddingLeft="32dp"
@@ -16,4 +16,12 @@
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content" />
+        -->
+    <Button
+        android:id="@+id/button_pay_order"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/upvoteBtnColor"
+        android:text="PAY"/>
 </LinearLayout>

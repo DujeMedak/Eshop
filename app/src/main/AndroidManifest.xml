@@ -19,9 +19,12 @@
         <activity
             android:name="com.cooltechworks.creditcarddesign.CardEditActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ScanActivity"
-            android:screenOrientation="portrait"> </activity>
-
+        <activity
+            android:name=".ScanActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".OrderPayment"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:excludeFromRecents="true"></activity>
     </application>
 
 </manifest>

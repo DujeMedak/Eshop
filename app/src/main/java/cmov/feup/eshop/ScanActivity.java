@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +43,7 @@ public class ScanActivity extends AppCompatActivity {
     boolean menuOn = false;
 
 
-
-    List<Order> orderList = new ArrayList<>();
+    ArrayList<Order> orderList = new ArrayList<>();
     RecyclerView mRecyclerView;
     OrderAdapter orderAdapter;
 
@@ -97,6 +95,15 @@ public class ScanActivity extends AppCompatActivity {
         layoutParams3.topMargin += (int) (fab3.getHeight() * 1.25);
 
         setupOrderRV();
+
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",4.32d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        //orderAdapter.notifyDataSetChanged();
     }
 
     public void setupOrderRV(){
@@ -104,9 +111,19 @@ public class ScanActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView)findViewById(R.id.rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        orderAdapter = new OrderAdapter();
+        orderAdapter = new OrderAdapter(new OrderdClickListener() {
+            @Override
+            public void onEditOrderClicked(View v, int position) {
+                Log.d("--------", "editClick at position "+ position);
+            }
+
+            @Override
+            public void onRemoveOrderClicked(View v, int position) {
+
+                Log.d("------->>>>>", "removeClick at position "+ position);
+            }
+        });
         mRecyclerView.setAdapter(orderAdapter);
-        //mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new OnItemClickListener()));
 
     }
 
@@ -167,11 +184,6 @@ public class ScanActivity extends AppCompatActivity {
         hideFab3();
         hideFab2();
     }
-
-    public void onDeleteOrderClick(View view){
-
-    }
-
 
     public void Onfab1Click(View view){
         if(!hide_fab_2.hasStarted() && !show_fab_2.hasStarted() || hide_fab_2.hasEnded() || show_fab_2.hasEnded() ){
@@ -247,7 +259,8 @@ public class ScanActivity extends AppCompatActivity {
                                     quantity=Integer.parseInt(text);  // We now know that it's safe to parse
                                 }
                                 //TODO change hardcoded decription to one obtained from server
-                                Product p = new Product("Product:"+contents);
+                                Double d = new Double(4.32);
+                                Product p = new Product("Name of the product" + "(" + contents + ")", "Some description that is received from server using the id of the product",d);
                                 addOrder(p,quantity);
 
                             }
@@ -273,7 +286,7 @@ public class ScanActivity extends AppCompatActivity {
 
     //-------------------------------product adapter things ---------------------------------
 
-    //TODO change offer to product write new function for rest connection
+    //TODO write new function for rest connection
 
     public void getOrders(){
         /*
@@ -337,6 +350,8 @@ public class ScanActivity extends AppCompatActivity {
 
         LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
         l.setVisibility(View.GONE);
+        Button payButton = (Button)findViewById(R.id.button_pay_order);
+        if (payButton != null)payButton.setVisibility(View.VISIBLE);
 
     }
 
@@ -348,6 +363,9 @@ public class ScanActivity extends AppCompatActivity {
             if(orderList.size() == 0){
                 LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
                 l.setVisibility(View.VISIBLE);
+
+                Button payButton = (Button)findViewById(R.id.button_pay_order);
+                if (payButton != null)payButton.setVisibility(View.GONE);
             }
         }
     }
@@ -358,6 +376,9 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     public TextView orderQuantity;
     public TextView orderDescription;
     public ExpandableLinearLayout expandableLayout;
+
+    Button removeOrder,editOrder;
+
     public boolean opened = false;
 
     public OrderViewHolder(View itemView) {
@@ -366,6 +387,37 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         orderQuantity = (TextView) itemView.findViewById(R.id.quantityTxt);
         expandableLayout = (ExpandableLinearLayout) itemView.findViewById(R.id.expandableLayout);
         itemView.setOnClickListener(this);
+
+        removeOrder = (Button)itemView.findViewById(R.id.button_delete_order);
+        editOrder = (Button)itemView.findViewById(R.id.button_edit_order);
+
+        removeOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(orderList.size() > getAdapterPosition()){
+                    removeOrderFromList(getAdapterPosition());
+                }
+                else{
+                    Toast.makeText(ScanActivity.this, "Could not remove the order", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        editOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ScanActivity.this, "edit order!", Toast.LENGTH_SHORT).show();
+                if(orderList.size() > getAdapterPosition()){
+                    //TODO get id of order and load new activity with details of order
+                    Order o = orderList.get(getAdapterPosition());
+
+                }
+                else{
+                    Toast.makeText(ScanActivity.this, "Could load order details", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
     @Override
     public void onClick(View v){
@@ -374,7 +426,7 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
             orderDescription.setMaxLines(10);
         }else{
             opened=false;
-            orderDescription.setMaxLines(4);
+            orderDescription.setMaxLines(2);
         }
         expandableLayout.toggle();
     }
@@ -382,13 +434,12 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 }
 
 class LoadingViewHolder extends RecyclerView.ViewHolder {
-    public ProgressBar progressBar;
-
+    public Button payOrdersButton;
 
     public LoadingViewHolder(View itemView) {
         super(itemView);
-        //TODO add ProgressBar element to xml
-        progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
+        payOrdersButton = (Button)itemView.findViewById(R.id.button_pay_order);
+        //progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
     }
 }
 
@@ -398,7 +449,10 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
 
+    private boolean hasLoadButton = true;
+
     private OnLoadMoreListener mOnLoadMoreListener;
+    public OrderdClickListener orderClickListener;
 
     private boolean isLoading;
     //TODO adjust after
@@ -407,7 +461,9 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private int lastPosition = -1;
 
-    public OrderAdapter() {
+    public OrderAdapter(OrderdClickListener listener) {
+
+        this.orderClickListener = listener;
 
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -436,16 +492,25 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        return orderList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        //if(position > orderList.size()) return VIEW_TYPE_LOADING;
+        //return orderList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return (position == orderList.size()) ? R.layout.layout_loading_item : R.layout.layout_product_item;
+        /*if (position < getItemCount()) {
+            return VIEW_TYPE_ITEM;
+        } else {
+            return VIEW_TYPE_LOADING;
+        }*/
+
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_ITEM) {
-            View view = LayoutInflater.from(ScanActivity.this).inflate(R.layout.layout_product_item, parent, false);
+        if (viewType == R.layout.layout_product_item) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_product_item, parent, false);
             return new OrderViewHolder(view);
-        } else if (viewType == VIEW_TYPE_LOADING) {
-            View view = LayoutInflater.from(ScanActivity.this).inflate(R.layout.layout_loading_item, parent, false);
+        }
+        else if (viewType == R.layout.layout_loading_item) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_loading_item, parent, false);
             return new LoadingViewHolder(view);
         }
         return null;
@@ -453,31 +518,63 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        Log.d("------>",holder.toString());
-        if (holder instanceof OrderViewHolder) {
-            Log.d("______>------------>",holder.toString());
+
+        if(position == orderList.size()){
+            ((LoadingViewHolder)holder).payOrdersButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                  /*  Toast.makeText(ScanActivity.this, "Button Clicked", Toast.LENGTH_SHORT).show();
+                    Intent next = new Intent(ScanActivity.this,OrderPayment.class);
+                    ScanActivity.this.startActivity(next);*/
+                    Intent intent=new Intent(getApplicationContext(),OrderPayment.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("VAR1",orderList);
+                    intent.putExtras(bundle);
+                    ScanActivity.this.startActivity(intent);
+                }
+            });
+        }
+        else {
             Order order = orderList.get(position);
             final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
 
-            Log.d("______>------->desc:::",order.getProduct().getProductDescription());
-            //Log.d("OFFER-",offer.getOfferDesription());
-            //TODO add quantity in xml and bind it here with real data
-            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()));
+            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()) + " x " + order.getProduct().getName());
+            orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
+            orderViewHolder.setIsRecyclable(false);
+            orderViewHolder.expandableLayout.setInRecyclerView(true);
+        }
+
+        /*
+        if (holder instanceof OrderViewHolder) {
+            Order order = orderList.get(position);
+            final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
+
+            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()) + " x " + order.getProduct().getName());
             orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
             orderViewHolder.setIsRecyclable(false);
             orderViewHolder.expandableLayout.setInRecyclerView(true);
 
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
-            loadingViewHolder.progressBar.setIndeterminate(true);
+            loadingViewHolder.payOrdersButton.setText("set text here");
         }
+*/
         // Ovo je za animiranje ulaska
         setAnimation(holder.itemView, position);
     }
 
     @Override
     public int getItemCount() {
-        return orderList == null ? 0 : orderList.size();
+
+        return orderList.size() +1;
+        /*
+        if (hasLoadButton) {
+            return orderList.size() + 1;
+        } else {
+            return orderList.size();
+        }
+        */
+        //return orderList == null ? 0 : orderList.size();
     }
 
     public void setLoaded() {
