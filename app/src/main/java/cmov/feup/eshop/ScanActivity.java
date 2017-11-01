@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cmov.feup.eshop.model.Order;
 import cmov.feup.eshop.model.Product;
@@ -41,6 +39,16 @@ public class ScanActivity extends AppCompatActivity {
     Animation show_fab_3,show_fab_2;
     Animation hide_fab_3,hide_fab_2;
     boolean menuOn = false;
+
+    public int getOrderEditing() {
+        return OrderEditing;
+    }
+
+    public void setOrderEditing(int orderEditing) {
+        OrderEditing = orderEditing;
+    }
+
+    int OrderEditing = 0;
 
 
     ArrayList<Order> orderList = new ArrayList<>();
@@ -100,17 +108,31 @@ public class ScanActivity extends AppCompatActivity {
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",4.32d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
-        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
-        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
-        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         */
-        addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        addOrder(new Product("Product 1","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",1d), 1);
+        addOrder(new Product("Product 2","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",2.21d), 4);
+        addOrder(new Product("Product 3","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.12d), 5);
+
+        addOrder(new Product("Product 4","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",24.99d), 11);
 
         //orderAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("orderNumber",getOrderEditing());
+        // ... save more data
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        setOrderEditing(savedInstanceState.getInt("orderNumber"));
+        // ... recover more data
+    }
+
     public void setupOrderRV(){
-        getOrders();
 
         mRecyclerView = (RecyclerView)findViewById(R.id.rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -191,17 +213,6 @@ public class ScanActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        bundle.putCharSequence("Message", message.getText());
-    }
-
-    public void onRestoreInstanceState(Bundle bundle) {
-        super.onRestoreInstanceState(bundle);
-        message.setText(bundle.getCharSequence("Message"));
-    }
-
     public void scan(boolean qrcode) {
         try {
             Intent intent = new Intent(ACTION_SCAN);
@@ -235,12 +246,24 @@ public class ScanActivity extends AppCompatActivity {
                 final String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
 
-                //message.setText("Format: " + format + "\nMessage: " + contents);
+                //
+                //
+                //TODO get Product informations from server (contents contains product id)
+                //
+                // final Product p = getProduct(contents);
+                //
+                //
+                //
+                //
+                //TODO remove next 2 lines after implementig rest conection
+                Double productPrice = new Double(4.32);
+                final Product product = new Product("Product Name","Some description that is received from server using the id of the product",productPrice);
 
 
+                //TODO maybe create new ctivity for this (DUJE)
                 new LovelyTextInputDialog(this).setNegativeButton("Cancel",null)
                         .setTopColorRes(R.color.colorPrimary)
-                        .setTitle("Format:" + format + " Code type:" + contents)
+                        .setTitle(product.getName() + " - " + contents)
                         .setMessage("Enter quantity")
                         .setIcon(R.drawable.logo2_256px)
                         .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
@@ -248,16 +271,27 @@ public class ScanActivity extends AppCompatActivity {
                             public void onTextInputConfirmed(String text) {
                                 int quantity = 0;
                                 if (tryParseInt(text)) {
-                                    quantity=Integer.parseInt(text);  // We now know that it's safe to parse
+                                    quantity=Integer.parseInt(text);
                                 }
-                                //TODO change hardcoded decription to one obtained from server
-                                Double d = new Double(4.32);
-                                Product p = new Product("Name of the product" + "(" + contents + ")", "Some description that is received from server using the id of the product",d);
-                                addOrder(p,quantity);
+
+                                addOrder(product,quantity);
 
                             }
                         })
                         .show();
+
+            }
+        }
+        //EDITING ORDER QUANTITY
+        else if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+
+                String newQuantity = data.getStringExtra("newQuantity");
+                //getOrderEditing is saved before calling orderDetails
+                if (tryParseInt(newQuantity)){
+                    orderList.get(getOrderEditing()).setQuantity(Integer.parseInt(newQuantity));
+                    orderAdapter.notifyDataSetChanged();
+                }
 
             }
         }
@@ -278,63 +312,9 @@ public class ScanActivity extends AppCompatActivity {
 
     //-------------------------------product adapter things ---------------------------------
 
-    //TODO write new function for rest connection
-
-    public void getOrders(){
-        /*
-            RestConnector.getWishById(this, wish.getIdWish(), 0, 5, new VolleyCallback<Wish>() {
-                @Override
-                public void onSuccessResponse(Wish result) {
-                    if(result != null){
-                        if(!result.getOfferList().isEmpty()){
-                            orderList.addAll(result.getOfferList());
-                            orderAdapter.notifyDataSetChanged();
-                            orderAdapter.setLoaded();
-                        }
-                        else{
-                            //Toast.makeText(WishDetailsActivity.this, "No offers", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    else{
-                        //Toast.makeText(WishDetailsActivity.this, "No offers", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-    */
-
-        //TODO change later
-
-
-        //orderList.addAll(orderList);
-        //orderAdapter.notifyDataSetChanged();
-        //orderAdapter.setLoaded();
-
-    }
-
 
     public void addOrder(Product newProduct, int quantity){
 
-        /*
-        //TODO UCINI STA OCES S OFFEROM
-        if(SessionManager.getCurrentUserProfile() != null){
-            if(SessionManager.getCurrentUserProfile().getProfilePicture() != null){
-                Offer newOffer = new Offer(wish.getIdWish(),SessionManager.getCurrentUserProfile().getIdUser(),str);
-                RestConnector.createOffer(this, newOffer, new VolleyCallback<Offer>() {
-                    @Override
-                    public void onSuccessResponse(Offer result) {
-                        if(result != null){
-                            mOffers.clear();
-                            getOrders();
-                        }
-                        else {
-                            Toast.makeText(WishDetailsActivity.this, "Error while adding new offer", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }
-        */
         Order newOrder = new Order(newProduct,quantity);
         orderList.add(newOrder);
         orderAdapter.notifyDataSetChanged();
@@ -357,8 +337,10 @@ public class ScanActivity extends AppCompatActivity {
 
 //ZA RECYCLER VIEW
 class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-    public TextView orderQuantity;
+    public TextView orderTitle;
     public TextView orderDescription;
+    public TextView orderTotalPrice;
+    public TextView orderPrice;
     public ExpandableLinearLayout expandableLayout;
 
     Button removeOrder,editOrder;
@@ -368,7 +350,10 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
     public OrderViewHolder(View itemView) {
         super(itemView);
         orderDescription = (TextView) itemView.findViewById(R.id.orderTxt);
-        orderQuantity = (TextView) itemView.findViewById(R.id.quantityTxt);
+        orderTitle = (TextView) itemView.findViewById(R.id.orderTitleTxt);
+        orderPrice = (TextView) itemView.findViewById(R.id.orderPriceTxt);
+        orderTotalPrice = (TextView) itemView.findViewById(R.id.orderPriceTotalTxt);
+
         expandableLayout = (ExpandableLinearLayout) itemView.findViewById(R.id.expandableLayout);
         itemView.setOnClickListener(this);
 
@@ -390,11 +375,15 @@ class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickLis
         editOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ScanActivity.this, "edit order!", Toast.LENGTH_SHORT).show();
                 if(orderList.size() > getAdapterPosition()){
-                    //TODO get id of order and load new activity with details of order
+                    setOrderEditing(getAdapterPosition());
                     Order o = orderList.get(getAdapterPosition());
 
+                    Intent intent=new Intent(getApplicationContext(),OrderDetails.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("VAR2",o);
+                    intent.putExtras(bundle);
+                    ScanActivity.this.startActivityForResult(intent,1);
                 }
                 else{
                     Toast.makeText(ScanActivity.this, "Could load order details", Toast.LENGTH_SHORT).show();
@@ -423,13 +412,13 @@ class LoadingViewHolder extends RecyclerView.ViewHolder {
     public LoadingViewHolder(View itemView) {
         super(itemView);
         payOrdersButton = (Button)itemView.findViewById(R.id.button_pay_order);
-        //progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar1);
     }
 }
 
 
 class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+    final String CURRENCY = "€";
 
     private int lastPosition = -1;
 
@@ -473,8 +462,11 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             Order order = orderList.get(position);
             final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
 
-            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()) + " x " + order.getProduct().getName());
+            orderViewHolder.orderTitle.setText(String.valueOf(order.getQuantity()) + " x " + order.getProduct().getName());
             orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
+            orderViewHolder.orderPrice.setText(String.valueOf(order.getQuantity()) + " x " + String.format("%.2f",order.getProduct().getPrice()) + CURRENCY + " = " );
+            orderViewHolder.orderTotalPrice.setText(String.format("%.2f",order.getProduct().getPrice() * order.getQuantity() ) + CURRENCY);
+
             orderViewHolder.setIsRecyclable(false);
             orderViewHolder.expandableLayout.setInRecyclerView(true);
         }

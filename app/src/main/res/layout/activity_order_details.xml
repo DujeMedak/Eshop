@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_gravity="bottom"
+android:padding="8dp"
+tools:context="cmov.feup.eshop.OrderDetails">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="top"
+    >
+
+    <TextView
+    android:id="@+id/orderDetailsDescriptionTxt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Description"
+    android:layout_gravity="center"
+    android:textSize="15sp"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
+
+        <EditText
+            android:id="@+id/editTxtOrderDetailsQuantity"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:hint="Enter quntity"
+            android:inputType="number"
+            />
+
+        <TextView
+            android:id="@+id/orderDetailsPriceTxt"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="41.93 €"
+            />
+        <TextView
+            android:id="@+id/totalPrice"
+            android:padding="3dp"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:text="41.93 €"
+            />
+    </LinearLayout>
+
+</LinearLayout>
+<LinearLayout
+    android:layout_gravity="bottom"
+    android:id="@+id/buttonGroup1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:orientation="horizontal">
+    <Button
+        android:layout_gravity="bottom"
+        android:id="@+id/buttonOrderDetailsCancel"
+        android:onClick="OnCancelButtonClick"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"/>
+    <Button
+        android:layout_gravity="bottom"
+        android:id="@+id/buttonOrderDetailsSave"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:onClick="OnSaveButtonClick"
+        android:text="SAVE"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/buttonOrderDetailsCancel"
+        android:backgroundTint="@color/upvoteBtnColor"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"/>
+</LinearLayout>
+</LinearLayout>

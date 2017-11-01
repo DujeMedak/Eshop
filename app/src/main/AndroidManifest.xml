@@ -21,10 +21,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ScanActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".OrderPayment"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:excludeFromRecents="true"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OrderPayment"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name=".OrderDetails"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Dialog" ></activity>
     </application>
 
 </manifest>

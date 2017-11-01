@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Duje on 25.10.2017..
  */
-
+//TODO if needed you can add more member variables
 public class Order implements Parcelable{
     Product p;
     int quantity;
@@ -18,6 +18,10 @@ public class Order implements Parcelable{
 
     public int getQuantity(){
         return quantity;
+    }
+
+    public void setQuantity(int q){
+        quantity = q;
     }
 
     public Product getProduct(){

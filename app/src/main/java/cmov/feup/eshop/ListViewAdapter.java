@@ -20,6 +20,7 @@ import cmov.feup.eshop.model.Order;
 public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClickListener{
 
     private ArrayList<Order> dataSet;
+    final String CURRENCY = "€";
     Context mContext;
 
     // View lookup cache
@@ -86,9 +87,9 @@ public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClick
         result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.txtNubmer.setText(String.valueOf(dataModel.getQuantity()));
+        viewHolder.txtNubmer.setText(String.valueOf(dataModel.getQuantity()) + " x ");
         viewHolder.txtName.setText(dataModel.getProduct().getName());
-        viewHolder.txtPrice.setText(String.format("%.2f", dataModel.getQuantity() * dataModel.getProduct().getPrice()));
+        viewHolder.txtPrice.setText(String.format("%.2f", dataModel.getQuantity() * dataModel.getProduct().getPrice()) + CURRENCY);
         //viewHolder.info.setOnClickListener(this);
         //viewHolder.info.setTag(position);
         // Return the completed view to render on screen

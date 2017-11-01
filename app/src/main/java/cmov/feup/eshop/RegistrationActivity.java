@@ -28,7 +28,7 @@ import java.util.GregorianCalendar;
 
 public class RegistrationActivity extends AppCompatActivity{
 
-
+    EditText name,surname,address,fiscalNumber,username,password;
     Date birthday = null;
     String gender = null;
 
@@ -45,9 +45,16 @@ public class RegistrationActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        final EditText editText = (EditText)findViewById(R.id.passwordTxt);
-        linearViewCard = (LinearLayout)findViewById(R.id.linearViewCreditCard);
+        name = (EditText)findViewById(R.id.nameTxt);
+        surname = (EditText)findViewById(R.id.surnameTxt);
+        address = (EditText)findViewById(R.id.addressTxt);
+        fiscalNumber = (EditText)findViewById(R.id.fiscalNumberTxt);
+        username = (EditText)findViewById(R.id.usernameTxt);
+        password = (EditText)findViewById(R.id.passwordTxt);
 
+
+        final EditText editText = password;
+        linearViewCard = (LinearLayout)findViewById(R.id.linearViewCreditCard);
         creditCardView = (CreditCardView)findViewById(R.id.card_5);
 
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -112,18 +119,39 @@ public class RegistrationActivity extends AppCompatActivity{
 
     public void OnRegisterClick(View view) {
 
-        final String name,surname,password,repeatedPassword,email,country,city,phoneNumber;
+        final String name,surname,address,username,password;
 
 
-        name = ((EditText)findViewById(R.id.nameTxt)).getText().toString();
+        name = this.name.getText().toString();
+        surname = this.surname.getText().toString();
+        address = this.address.getText().toString();
+        username = this.username.getText().toString();
+        password = this.password.getText().toString();
 
-        if(name.isEmpty()){
-            //Toast.makeText(this, "You must enter the name!", Toast.LENGTH_SHORT).show();
+        // You can also use this member variables (maybe need to check if data is valid before)
+        // cardHolderName, cardNumber, expiry, cvv (all of them are Strings)
+        //TODO add more conditions if needed
+        if(name.isEmpty() || surname.isEmpty() || username.isEmpty() || password.isEmpty()){
+            Toast.makeText(this, "Please fill out all required data!", Toast.LENGTH_SHORT).show();
         }
         else{
 
+            //TODO encrypt data
+            //TODO try registration
+            //TODO if succesful save all the data needed for payment in some file or something
+            //RestConector.register(name,cardNumber,...) or something like that
+            /*if(result == ok){
+                Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
+                RegistrationActivity.this.startActivity(next);
+            }
+            else{
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+
+             */
         }
-        //TODO change this
+        //TODO remove this 2 lines after implementing rest connection
         Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
         RegistrationActivity.this.startActivity(next);
 
