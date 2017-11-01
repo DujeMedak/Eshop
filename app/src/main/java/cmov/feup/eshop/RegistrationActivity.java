@@ -139,7 +139,7 @@ public class RegistrationActivity extends AppCompatActivity{
             //TODO encrypt data
             //TODO try registration
             //TODO if succesful save all the data needed for payment in some file or something
-            //RestConector.register(name,cardNumber,...) or something like that
+            //for instance register(name,cardNumber,...) or something like that
             /*if(result == ok){
                 Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
                 RegistrationActivity.this.startActivity(next);
