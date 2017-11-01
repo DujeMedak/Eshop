@@ -96,13 +96,16 @@ public class ScanActivity extends AppCompatActivity {
 
         setupOrderRV();
 
+        /*
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",4.32d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+        */
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);
+
         //orderAdapter.notifyDataSetChanged();
     }
 
@@ -111,18 +114,7 @@ public class ScanActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView)findViewById(R.id.rv);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        orderAdapter = new OrderAdapter(new OrderdClickListener() {
-            @Override
-            public void onEditOrderClicked(View v, int position) {
-                Log.d("--------", "editClick at position "+ position);
-            }
-
-            @Override
-            public void onRemoveOrderClicked(View v, int position) {
-
-                Log.d("------->>>>>", "removeClick at position "+ position);
-            }
-        });
+        orderAdapter = new OrderAdapter();
         mRecyclerView.setAdapter(orderAdapter);
 
     }
@@ -346,26 +338,18 @@ public class ScanActivity extends AppCompatActivity {
         Order newOrder = new Order(newProduct,quantity);
         orderList.add(newOrder);
         orderAdapter.notifyDataSetChanged();
-        orderAdapter.setLoaded();
 
         LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
         l.setVisibility(View.GONE);
-        Button payButton = (Button)findViewById(R.id.button_pay_order);
-        if (payButton != null)payButton.setVisibility(View.VISIBLE);
-
     }
 
     public void removeOrderFromList(int index){
         if(orderList.size() > index){
             orderList.remove(index);
             orderAdapter.notifyDataSetChanged();
-            orderAdapter.setLoaded();
             if(orderList.size() == 0){
                 LinearLayout l = (LinearLayout)findViewById(R.id.noOrdersTxt);
                 l.setVisibility(View.VISIBLE);
-
-                Button payButton = (Button)findViewById(R.id.button_pay_order);
-                if (payButton != null)payButton.setVisibility(View.GONE);
             }
         }
     }
@@ -446,61 +430,12 @@ class LoadingViewHolder extends RecyclerView.ViewHolder {
 
 class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private final int VIEW_TYPE_ITEM = 0;
-    private final int VIEW_TYPE_LOADING = 1;
-
-    private boolean hasLoadButton = true;
-
-    private OnLoadMoreListener mOnLoadMoreListener;
-    public OrderdClickListener orderClickListener;
-
-    private boolean isLoading;
-    //TODO adjust after
-    private int visibleThreshold = 5;
-    private int lastVisibleItem, totalItemCount;
 
     private int lastPosition = -1;
 
-    public OrderAdapter(OrderdClickListener listener) {
-
-        this.orderClickListener = listener;
-
-        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                totalItemCount = linearLayoutManager.getItemCount();
-                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-
-                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mOnLoadMoreListener != null) {
-                        mOnLoadMoreListener.onLoadMore();
-                    }
-                    isLoading = true;
-                }
-            }
-        });
-    }
-
-    /*
-    public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
-        this.mOnLoadMoreListener = mOnLoadMoreListener;
-    }
-    */
-
     @Override
     public int getItemViewType(int position) {
-        //if(position > orderList.size()) return VIEW_TYPE_LOADING;
-        //return orderList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
         return (position == orderList.size()) ? R.layout.layout_loading_item : R.layout.layout_product_item;
-        /*if (position < getItemCount()) {
-            return VIEW_TYPE_ITEM;
-        } else {
-            return VIEW_TYPE_LOADING;
-        }*/
-
     }
 
     @Override
@@ -543,22 +478,6 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             orderViewHolder.setIsRecyclable(false);
             orderViewHolder.expandableLayout.setInRecyclerView(true);
         }
-
-        /*
-        if (holder instanceof OrderViewHolder) {
-            Order order = orderList.get(position);
-            final OrderViewHolder orderViewHolder = (OrderViewHolder) holder;
-
-            orderViewHolder.orderQuantity.setText(String.valueOf(order.getQuantity()) + " x " + order.getProduct().getName());
-            orderViewHolder.orderDescription.setText(order.getProduct().getProductDescription());
-            orderViewHolder.setIsRecyclable(false);
-            orderViewHolder.expandableLayout.setInRecyclerView(true);
-
-        } else if (holder instanceof LoadingViewHolder) {
-            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
-            loadingViewHolder.payOrdersButton.setText("set text here");
-        }
-*/
         // Ovo je za animiranje ulaska
         setAnimation(holder.itemView, position);
     }
@@ -566,19 +485,8 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public int getItemCount() {
 
+        if(orderList.isEmpty()) return orderList.size();
         return orderList.size() +1;
-        /*
-        if (hasLoadButton) {
-            return orderList.size() + 1;
-        } else {
-            return orderList.size();
-        }
-        */
-        //return orderList == null ? 0 : orderList.size();
-    }
-
-    public void setLoaded() {
-        isLoading = false;
     }
 
     private void setAnimation(View viewToAnimate, int position)
