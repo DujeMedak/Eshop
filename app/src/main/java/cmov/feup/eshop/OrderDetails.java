@@ -43,7 +43,7 @@ public class OrderDetails extends AppCompatActivity {
     }
 
     public void OnSaveButtonClick(View view){
-        
+
         //TODO handle wrong input (DUJE)
         Intent resultIntent = new Intent();
         resultIntent.putExtra("newQuantity",quantityEditText.getText().toString() );

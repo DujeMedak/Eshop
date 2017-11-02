@@ -21,14 +21,21 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ScanActivity"
+            android:theme="@style/AppThemeActionBar"
+            android:label="Current order list"
             android:screenOrientation="portrait" />
         <activity
             android:name=".OrderPayment"
+            android:label="OrderDetails"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".OrderDetails"
+        <activity
+            android:name=".OrderDetails"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.AppCompat.Dialog" ></activity>
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name=".PreviousOrders"
+            android:label="Previous orders"
+            android:theme="@style/AppThemeActionBar"></activity>
     </application>
 
 </manifest>

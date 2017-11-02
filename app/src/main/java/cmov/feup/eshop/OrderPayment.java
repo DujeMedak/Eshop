@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,6 +41,16 @@ public class OrderPayment extends AppCompatActivity{
 
             Bundle bundle = getIntent().getExtras();
             ArrayList<Order> dataModels = bundle.getParcelableArrayList("VAR1");
+            int previousActivity = bundle.getInt("ACT");
+            switch (previousActivity){
+                case ActivityConstants.PREVIOUS_ORDERS_ACTIVITY:
+                    Button cancel = (Button)findViewById(R.id.button_delete_order);
+                    Button pay = (Button)findViewById(R.id.button_edit_order);
+                    pay.setVisibility(View.GONE);
+                    cancel.setVisibility(View.GONE);
+            }
+
+
             adapter= new ListViewAdapter(dataModels,getApplicationContext());
 
             TextView totalPrice = (TextView)findViewById(R.id.orderPriceTotalTxt) ;

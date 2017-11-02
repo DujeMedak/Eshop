@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -119,17 +122,42 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        //In case of adding more options
+        switch (item.getItemId()){
+            case R.id.previousOrders:
+                Intent intent = new Intent(this,PreviousOrders.class);
+                this.startActivity(intent);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("orderNumber",getOrderEditing());
-        // ... save more data
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         setOrderEditing(savedInstanceState.getInt("orderNumber"));
-        // ... recover more data
     }
 
     public void setupOrderRV(){
@@ -453,6 +481,7 @@ class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     Intent intent=new Intent(getApplicationContext(),OrderPayment.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("VAR1",orderList);
+                    bundle.putInt("ACT",ActivityConstants.SCAN_ACTIVITY);
                     intent.putExtras(bundle);
                     ScanActivity.this.startActivity(intent);
                 }
