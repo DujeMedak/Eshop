@@ -107,6 +107,8 @@ public class ScanActivity extends AppCompatActivity {
 
         setupOrderRV();
 
+
+        //TODO remove mock orders after testing
         /*
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",4.32d), 12);
         addOrder(new Product("Name of the product","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.21d), 12);

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cmov.feup.eshop">
 
+    <uses-permission android:name="android.permission.NFC"/>
+    <uses-feature android:name="android.hardware.nfc" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,21 +23,23 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ScanActivity"
-            android:theme="@style/AppThemeActionBar"
             android:label="Current order list"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActionBar" />
         <activity
             android:name=".OrderPayment"
-            android:label="OrderDetails"
             android:excludeFromRecents="true"
+            android:label="OrderDetails"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".OrderDetails"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".PreviousOrders"
+        <activity
+            android:name=".PreviousOrders"
             android:label="Previous orders"
-            android:theme="@style/AppThemeActionBar"></activity>
+            android:theme="@style/AppThemeActionBar" />
+        <activity android:name=".SendPaymentTokenActivity"></activity>
     </application>
 
 </manifest>

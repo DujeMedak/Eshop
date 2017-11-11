@@ -84,11 +84,19 @@ public class OrderPayment extends AppCompatActivity{
         }
 
         public void OnPayButtonClick(View view){
+            //TODO use real token
+           String token = "Replace with real token";
+
             //TODO implement the paying (use data saved during registration)
+            //token = realToken;
             //
-            //
-            //
-            //TODO load new Activity (not created yet) (DUJE)
+
+
+            Intent intent = new Intent(this, SendPaymentTokenActivity.class);
+            intent.putExtra("message", token);
+            intent.putExtra("NFCtag", "application/nfc.feup.apm.message.type1");
+            startActivity(intent);
+
         }
 
     }
