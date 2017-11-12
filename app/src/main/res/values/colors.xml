@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff3256</color>
-    <color name="colorPrimaryDark">#9f1e36</color>
-    <color name="colorAccent">#2979FF</color>
-    <color name="upvoteBtnColor">#009688</color>
+    <color name="colorPrimary">#CDDC39</color>
+    <color name="colorPrimaryDark">#AFB42B</color>
+    <color name="colorPrimatyLight">#e3e775</color>
+    <color name="colorAccent">#40C4FF</color>
+    <color name="actionButtonColor">#009688</color>
     <color name="white">#fff</color>
-    <color name="upvoteBtnColorPressed">#37474f</color>
+    <color name="actionButtonColorPressed">#37474f</color>
+    <color name="colorSecondary">#9E9E9E</color>
 </resources>

@@ -362,7 +362,7 @@
                                     app:fabSize="normal"
                                     android:layout_margin="8dp"
                                     android:layout_width="wrap_content"
-                                    app:backgroundTint="@color/upvoteBtnColor"
+                                    app:backgroundTint="@color/actionButtonColor"
                                     android:layout_height="wrap_content"
                                     android:src="@drawable/ic_check_white_24dp"
                                     />

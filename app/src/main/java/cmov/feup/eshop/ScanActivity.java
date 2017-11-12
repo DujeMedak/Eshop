@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 import cmov.feup.eshop.model.Order;
 import cmov.feup.eshop.model.Product;
 
+import static cmov.feup.eshop.ActivityConstants.PREFS_NAME;
+
 public class ScanActivity extends AppCompatActivity {
 
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
@@ -52,6 +56,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     int OrderEditing = 0;
+
 
 
     ArrayList<Order> orderList = new ArrayList<>();
@@ -96,7 +101,7 @@ public class ScanActivity extends AppCompatActivity {
         fab3 = (FloatingActionButton)findViewById(R.id.fab_3);
 
         QRButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(ScanActivity.this, R.color.colorPrimary)));
-        barButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(ScanActivity.this, R.color.upvoteBtnColor)));
+        barButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(ScanActivity.this, R.color.actionButtonColor)));
 
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab2.getLayoutParams();
         layoutParams.topMargin += (int) (fab2.getHeight() * 1.5);
@@ -119,7 +124,7 @@ public class ScanActivity extends AppCompatActivity {
         addOrder(new Product("Product 3","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",3.12d), 5);
 
         addOrder(new Product("Product 4","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",24.99d), 11);
-
+        Log.d("---------","dd");
         //orderAdapter.notifyDataSetChanged();
     }
 
@@ -131,6 +136,15 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -140,6 +154,16 @@ public class ScanActivity extends AppCompatActivity {
                 Intent intent = new Intent(this,PreviousOrders.class);
                 this.startActivity(intent);
                 return true;
+            case R.id.signOut:
+                Intent intent2 = new Intent(this,RegistrationActivity.class);
+                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("LoggedIn", false);
+                // Commit the edits!
+                editor.commit();
+                this.startActivity(intent2);
+                return true;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -290,7 +314,6 @@ public class ScanActivity extends AppCompatActivity {
                 final Product product = new Product("Product Name","Some description that is received from server using the id of the product",productPrice);
 
 
-                //TODO maybe create new ctivity for this (DUJE)
                 new LovelyTextInputDialog(this).setNegativeButton("Cancel",null)
                         .setTopColorRes(R.color.colorPrimary)
                         .setTitle(product.getName() + " - " + contents)
@@ -337,8 +360,6 @@ public class ScanActivity extends AppCompatActivity {
             return false;
         }
     }
-
-
 
     //-------------------------------product adapter things ---------------------------------
 

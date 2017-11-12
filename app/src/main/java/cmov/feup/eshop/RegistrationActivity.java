@@ -2,6 +2,7 @@ package cmov.feup.eshop;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import org.w3c.dom.Text;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import static cmov.feup.eshop.ActivityConstants.PREFS_NAME;
 
 public class RegistrationActivity extends AppCompatActivity{
 
@@ -141,6 +144,8 @@ public class RegistrationActivity extends AppCompatActivity{
             //TODO if succesful save all the data needed for payment in some file or something
             //for instance register(name,cardNumber,...) or something like that
             /*if(result == ok){
+
+                saveLogin();
                 Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
                 RegistrationActivity.this.startActivity(next);
             }
@@ -152,8 +157,31 @@ public class RegistrationActivity extends AppCompatActivity{
              */
         }
         //TODO remove this 2 lines after implementing rest connection
+        //save login should only be if the result is OK
+        saveLogin();
         Intent next = new Intent(RegistrationActivity.this,ScanActivity.class);
+        next.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         RegistrationActivity.this.startActivity(next);
+
+    }
+
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        finish();
+    }
+
+    void saveLogin(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("LoggedIn", true);
+
+        // Commit the edits!
+        editor.commit();
 
     }
 

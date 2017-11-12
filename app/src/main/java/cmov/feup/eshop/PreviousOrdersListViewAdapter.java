@@ -36,7 +36,7 @@ public class PreviousOrdersListViewAdapter extends ArrayAdapter<FinishedOrder>{
     }
 
     public PreviousOrdersListViewAdapter(ArrayList<FinishedOrder> data, Context context) {
-        super(context, R.layout.layout_listview_item, data);
+        super(context, R.layout.layout_listview_item2, data);
         this.dataSet = data;
         this.mContext=context;
 
@@ -57,7 +57,7 @@ public class PreviousOrdersListViewAdapter extends ArrayAdapter<FinishedOrder>{
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.layout_listview_item, parent, false);
+            convertView = inflater.inflate(R.layout.layout_listview_item2, parent, false);
             viewHolder.orderID = (TextView) convertView.findViewById(R.id.item_number);
             viewHolder.orderDate = (TextView) convertView.findViewById(R.id.item_nameTxt);
             viewHolder.orderTotalPrice = (TextView) convertView.findViewById(R.id.priceTxt);

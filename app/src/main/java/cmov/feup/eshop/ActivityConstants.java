@@ -6,4 +6,6 @@ package cmov.feup.eshop;
 public interface ActivityConstants {
     public static final int SCAN_ACTIVITY = 1001;
     public static final int PREVIOUS_ORDERS_ACTIVITY = 1002;
+    public static final String PREFS_NAME = "LoginData";
+    public static final String PREFS_LOGGED = "LoggedIn";
 }

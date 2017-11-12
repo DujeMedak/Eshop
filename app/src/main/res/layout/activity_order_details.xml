@@ -94,7 +94,7 @@ tools:context="cmov.feup.eshop.OrderDetails">
         android:textColor="#fff"
         android:textStyle="bold"
         android:layout_toRightOf="@+id/buttonOrderDetailsCancel"
-        android:backgroundTint="@color/upvoteBtnColor"
+        android:backgroundTint="@color/actionButtonColor"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"/>
 </LinearLayout>

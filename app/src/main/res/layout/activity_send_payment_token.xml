@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cmov.feup.eshop.SendPaymentTokenActivity">
+    tools:context="cmov.feup.eshop.SendPaymentTokenActivity"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:background="@drawable/bg_patter_no_wishes_tiled2">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+
         <ImageView
+            android:layout_above="@+id/ll"
+            android:layout_margin="64dp"
+            android:foregroundGravity="center"
             android:id="@+id/qrCode"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimatyLight"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:padding="5dp"/>
+            android:background="@drawable/nfc128"
+            android:padding="8dp" />
+
         <TextView
             android:id="@+id/sendTokenTxt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            android:text="sending token..."/>
+            android:text="Sending token..."
+            android:textAlignment="center" />
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
