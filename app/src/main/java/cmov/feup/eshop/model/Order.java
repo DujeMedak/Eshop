@@ -6,14 +6,42 @@ import android.os.Parcelable;
 /**
  * Created by Duje on 25.10.2017..
  */
-//TODO if needed you can add more member variables
 public class Order implements Parcelable{
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Order createFromParcel(Parcel in) {
+            return new Order(in);
+        }
+
+        public Order[] newArray(int size) {
+            return new Order[size];
+        }
+    };
     Product p;
     int quantity;
 
     public Order(Product p,int q){
         this.p = p;
         quantity = q;
+    }
+
+    public Order(Parcel in) {/*
+        String[] data = new String[5];
+
+        in.readStringArray(data);
+        //name,description
+        Product p = new Product(data[0],data[1], data[2],Double.parseDouble(data[3]));
+        this.p = p;
+
+        this.quantity = tryParseInt(data[4]);*/
+        String[] data = new String[4];
+
+        in.readStringArray(data);
+        //name,description
+        Product p = new Product("", data[0], data[1], Double.parseDouble(data[2]));
+        this.p = p;
+
+        this.quantity = tryParseInt(data[3]);
+
     }
 
     public int getQuantity(){
@@ -26,18 +54,6 @@ public class Order implements Parcelable{
 
     public Product getProduct(){
         return p;
-    }
-
-    public Order(Parcel in){
-        String[] data = new String[4];
-
-        in.readStringArray(data);
-        //name,description
-        Product p = new Product(data[0],data[1],Double.parseDouble(data[2]));
-        this.p = p;
-
-        this.quantity = tryParseInt(data[3]);
-
     }
 
     @Override
@@ -53,16 +69,6 @@ public class Order implements Parcelable{
                 String.valueOf(this.getQuantity())
         });
     }
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Order createFromParcel(Parcel in) {
-            return new Order(in);
-        }
-
-        public Order[] newArray(int size) {
-            return new Order[size];
-        }
-    };
-
 
     int tryParseInt(String value) {
         int intValue = 1;
