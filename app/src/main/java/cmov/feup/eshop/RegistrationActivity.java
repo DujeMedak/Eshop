@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,17 +45,17 @@ public class RegistrationActivity extends AppCompatActivity {
     LinearLayout linearViewCard;
     CreditCardView creditCardView;
     boolean creditCardClicked = false;
-    String cardHolderName = null;
-    String cardNumber = null;
-    String expiry = null;
-    String cvv = null;
+    String cardHolderName = "";
+    String cardNumber = "";
+    String expiry = "";
+    String cvv = "";
     boolean registrationSuccess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-
+        this.deleteDatabase("eshop.db");
         dbHelper = new DBHelper(this);
 
         name = (EditText) findViewById(R.id.nameTxt);
@@ -133,12 +134,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
         final String name, surname, address, username, password, fiscalNumber;
 
-        name = this.name.getText().toString();
-        surname = this.surname.getText().toString();
-        address = this.address.getText().toString();
-        username = this.username.getText().toString();
-        password = this.password.getText().toString();
-        fiscalNumber = this.fiscalNumber.getText().toString();
+        name = this.name.getText().toString().trim();
+        surname = this.surname.getText().toString().trim();
+        address = this.address.getText().toString().trim();
+        username = this.username.getText().toString().trim();
+        password = this.password.getText().toString().trim();
+        fiscalNumber = this.fiscalNumber.getText().toString().trim();
 
         if (name.isEmpty() || surname.isEmpty() || username.isEmpty() || password.isEmpty()
                 || fiscalNumber.isEmpty() || cardHolderName.isEmpty() || cardNumber.isEmpty()
@@ -147,22 +148,22 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(368, new SecureRandom());
-            KeyPair keyPair = kpg.genKeyPair();
-            byte[] privateKey = keyPair.getPrivate().getEncoded();
-            byte[] publicKey = keyPair.getPublic().getEncoded();
-
+            KeyPair keyPair = kpg.generateKeyPair();
+            String privateKeyString = Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.DEFAULT);
+            String publicKeyString = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.DEFAULT);
             String bodyMessage = "username=" + username + "&password=" + password + "&name="
                     + name + "&surname=" + surname + "&address=" + address + "&fis_number="
                     + fiscalNumber + "&card_holder=" + cardHolderName + "&card_number="
-                    + cardNumber + "&card_exp_date=" + expiry + "&card_cvv=" + cvv + "&public_key=" + publicKey.toString();
+                    + cardNumber + "&card_exp_date=" + expiry + "&card_cvv=" + cvv
+                    + "&public_key=" + publicKeyString;
 
-            Register register = new Register("192.168.137.1", bodyMessage);
+            Register register = new Register(bodyMessage);
             Thread thr = new Thread(register);
             thr.start();
             while (thr.isAlive()) {
             }
             if (registrationSuccess) {
-                dbHelper.insert(username, privateKey.toString());
+                dbHelper.insert(username, name, surname, privateKeyString);
                 saveLogin();
                 Intent next = new Intent(RegistrationActivity.this, ScanActivity.class);
                 next.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -201,11 +202,9 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private class Register implements Runnable {
-        String address = null;
         String body = null;
 
-        Register(String baseAddress, String bodyMessage) {
-            address = baseAddress;
+        Register(String bodyMessage) {
             body = bodyMessage;
         }
 
@@ -238,7 +237,7 @@ public class RegistrationActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             try {
-                url = new URL("http://" + address + ":8181/register");
+                url = new URL("http://" + EshopServer.address + ":8181/register");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
@@ -258,7 +257,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     }
                 }
             } catch (Exception e) {
-                Log.d(address, "register", e);
+                Log.d(EshopServer.address, "register", e);
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();

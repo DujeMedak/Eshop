@@ -19,8 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import cmov.feup.eshop.model.FinishedOrder;
 import cmov.feup.eshop.model.Order;
@@ -64,7 +64,7 @@ public class PreviousOrders extends AppCompatActivity {
         });
 
 
-        GetPreviousOrders prevOrders = new GetPreviousOrders("192.168.137.1");
+        GetPreviousOrders prevOrders = new GetPreviousOrders();
         Thread thr = new Thread(prevOrders);
         thr.start();
     }
@@ -111,12 +111,13 @@ public class PreviousOrders extends AppCompatActivity {
                             Order order = new Order(product, quantity);
                             arrayOrder.add(order);
                         }
-                        dataModels.add(new FinishedOrder(orderId, new Date(date), arrayOrder));
+                        dataModels.add(new FinishedOrder(orderId, new SimpleDateFormat("dd/MM/yyyy@HH:mm").parse(date), arrayOrder));
                     }
                     adapter = new PreviousOrdersListViewAdapter(dataModels, getApplicationContext());
 
                     listView.setAdapter(adapter);
                 } catch (Exception e) {
+                    Log.d("previous orders", e.toString());
                 }
             }
         });
@@ -124,11 +125,6 @@ public class PreviousOrders extends AppCompatActivity {
     }
 
     private class GetPreviousOrders implements Runnable {
-        String address = null;
-
-        GetPreviousOrders(String baseAddress) {
-            address = baseAddress;
-        }
 
         private String readStream(InputStream in) {
             BufferedReader reader = null;
@@ -159,7 +155,7 @@ public class PreviousOrders extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             try {
-                url = new URL("http://" + address + ":8181/salehist/" + username);
+                url = new URL("http://" + EshopServer.address + ":8181/salehist/" + username);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setUseCaches(false);
                 urlConnection.setRequestMethod("GET");
@@ -170,7 +166,7 @@ public class PreviousOrders extends AppCompatActivity {
                     updateUI(response);
                 }
             } catch (Exception e) {
-                Log.d(address, "previousOrders", e);
+                Log.d(EshopServer.address, "previousOrders", e);
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();

@@ -284,7 +284,7 @@ public class ScanActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 final String contents = data.getStringExtra("SCAN_RESULT");
                 String format = data.getStringExtra("SCAN_RESULT_FORMAT");
-                GetProduct getProduct = new GetProduct("192.168.137.1", contents);
+                GetProduct getProduct = new GetProduct(contents);
                 Thread thr = new Thread(getProduct);
                 thr.start();
             }
@@ -339,15 +339,14 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUI(String s) {
+    private void updateUI() {
         final Context c = this;
-        final String s1 = s;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 new LovelyTextInputDialog(c).setNegativeButton("Cancel", null)
                         .setTopColorRes(R.color.colorPrimary)
-                        .setTitle(product.getName() + " - " + s1)
+                        .setTitle(product.getName() + " - " + product.getRef())
                         .setMessage("Enter quantity")
                         .setIcon(R.drawable.logo2_256px)
                         .setConfirmButton("Add to basket", new LovelyTextInputDialog.OnTextInputConfirmListener() {
@@ -521,11 +520,9 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private class GetProduct implements Runnable {
-        String address = null;
         String ref = null;
 
-        GetProduct(String baseAddress, String reference) {
-            address = baseAddress;
+        GetProduct(String reference) {
             ref = reference;
         }
 
@@ -558,7 +555,7 @@ public class ScanActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             try {
-                url = new URL("http://" + address + ":8181/product/" + ref);
+                url = new URL("http://" + EshopServer.address + ":8181/product/" + ref);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setUseCaches(false);
                 urlConnection.setRequestMethod("GET");
@@ -571,10 +568,10 @@ public class ScanActivity extends AppCompatActivity {
                             jsonObject.getString("name"),
                             jsonObject.getString("desc"),
                             jsonObject.getDouble("cost"));
-                    updateUI(ref);
+                    updateUI();
                 }
             } catch (Exception e) {
-                Log.d(address, "product", e);
+                Log.d(EshopServer.address, "product", e);
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();

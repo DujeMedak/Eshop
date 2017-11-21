@@ -17,22 +17,36 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE user (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, privatekey TEXT);");
+        db.execSQL("CREATE TABLE user (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, name TEXT, surname TEXT, privatekey BLOB);"); //TEXT OR BLOB?
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insert(String username, String privateKey) {
+    public void insert(String username, String name, String surname, String privateKey) {
         ContentValues cv = new ContentValues();
         cv.put("username", username);
+        cv.put("name", name);
+        cv.put("surname", surname);
         cv.put("privatekey", privateKey);
-        getWritableDatabase().insert("user", username, cv);
+        getWritableDatabase().insert("user", null, cv);
     }
 
     public String getUsername() {
-        Cursor c = getReadableDatabase().rawQuery("SELECT username FROM user", null);//.getString(0);
+        Cursor c = getReadableDatabase().rawQuery("SELECT username FROM user", null);
+        c.moveToFirst();
+        return c.getString(0);
+    }
+
+    public String getName() {
+        Cursor c = getReadableDatabase().rawQuery("SELECT name FROM user", null);
+        c.moveToFirst();
+        return c.getString(0);
+    }
+
+    public String getSurname() {
+        Cursor c = getReadableDatabase().rawQuery("SELECT surname FROM user", null);
         c.moveToFirst();
         return c.getString(0);
     }

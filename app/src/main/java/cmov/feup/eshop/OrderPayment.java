@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import cmov.feup.eshop.model.Order;
 
@@ -94,30 +102,34 @@ public class OrderPayment extends AppCompatActivity {
     }
 
     public void OnPayButtonClick(View view) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException, UnsupportedEncodingException {
-        String itemList = "";
+        String itemList = "[";
         for (Order o : dataModels) {
-            itemList += o.getProduct().getRef() + ":" + o.getQuantity() + ",";
+            itemList += "{\"product\": {\"_id\": \"" + o.getProduct().getRef() + "\", \"name\": \""
+                    + o.getProduct().getName() + "\", \"desc\": \"" + o.getProduct().getProductDescription()
+                    + "\", \"cost\": \"" + o.getProduct().getPrice() + "\"}, \"quantity\": \"" + o.getQuantity() + "\"},";
         }
-        itemList = itemList.substring(0, itemList.length() - 1);
+        itemList = itemList.substring(0, itemList.length() - 1) + "]";
 
         String username = dbHelper.getUsername();
+        String name = dbHelper.getName();
+        String surname = dbHelper.getSurname();
         String privateKeyString = dbHelper.getPrivateKey();
-/*
-        byte [] privateKeyBytes = Base64.decode(privateKeyString, Base64.DEFAULT);
+
+        byte[] privateKeyBytes = Base64.decode(privateKeyString, Base64.DEFAULT);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
         Signature signature = Signature.getInstance("SHA1withRSA");
         signature.initSign(privateKey, new SecureRandom());
         byte[] msg = itemList.getBytes();
         signature.update(msg);
         byte[] sig = signature.sign();
-*/
-        byte[] sig = "".getBytes();
 
-        String bodyMessage = "username=" + username + "&itemList=" + itemList + "&signature=" + sig;
+        String bodyMessage = "username=" + username + "&name=" + name + "&surname=" + surname
+                + "&date=" + new SimpleDateFormat("dd/MM/yyyy@HH:mm").format(new Date()) + "&itemlist=" + itemList + "&signature=" + sig;
 
-        Checkout checkout = new Checkout("192.168.137.1", bodyMessage);
+        Checkout checkout = new Checkout(bodyMessage);
         Thread thr = new Thread(checkout);
         thr.start();
     }
@@ -142,11 +154,9 @@ public class OrderPayment extends AppCompatActivity {
     }
 
     private class Checkout implements Runnable {
-        String address = null;
         String body = null;
 
-        Checkout(String baseAddress, String bodyMessage) {
-            address = baseAddress;
+        Checkout(String bodyMessage) {
             body = bodyMessage;
         }
 
@@ -172,14 +182,14 @@ public class OrderPayment extends AppCompatActivity {
             }
             return response.toString();
         }
--
+
         @Override
         public void run() {
             URL url;
             HttpURLConnection urlConnection = null;
 
             try {
-                url = new URL("http://" + address + ":8181/checkout");
+                url = new URL("http://" + EshopServer.address + ":8181/checkout");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
@@ -200,7 +210,7 @@ public class OrderPayment extends AppCompatActivity {
                     updateUI(token);
                 }
             } catch (Exception e) {
-                Log.d(address, "checkout", e);
+                Log.d(EshopServer.address, "checkout", e);
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();

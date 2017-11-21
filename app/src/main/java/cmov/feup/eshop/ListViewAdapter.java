@@ -19,16 +19,10 @@ import cmov.feup.eshop.model.Order;
 
 public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClickListener{
 
-    private ArrayList<Order> dataSet;
     final String CURRENCY = "€";
     Context mContext;
-
-    // View lookup cache
-    private static class ViewHolder {
-        TextView txtNubmer;
-        TextView txtName;
-        TextView txtPrice;
-    }
+    private ArrayList<Order> dataSet;
+    private int lastPosition = -1;
 
     public ListViewAdapter(ArrayList<Order> data, Context context) {
         super(context, R.layout.layout_listview_item, data);
@@ -42,8 +36,6 @@ public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClick
     public void onClick(View v) {
         //TODO open new activity with details
     }
-
-    private int lastPosition = -1;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -59,7 +51,7 @@ public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClick
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.layout_listview_item, parent, false);
-            viewHolder.txtNubmer = (TextView) convertView.findViewById(R.id.item_number);
+            viewHolder.txtNumber = (TextView) convertView.findViewById(R.id.item_number);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.item_nameTxt);
             viewHolder.txtPrice = (TextView) convertView.findViewById(R.id.priceTxt);
 
@@ -75,10 +67,17 @@ public class ListViewAdapter extends ArrayAdapter<Order> implements View.OnClick
         result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.txtNubmer.setText(String.valueOf(dataModel.getQuantity()) + " x ");
+        viewHolder.txtNumber.setText(String.valueOf(dataModel.getQuantity()) + " x ");
         viewHolder.txtName.setText(dataModel.getProduct().getName());
         viewHolder.txtPrice.setText(String.format("%.2f", dataModel.getQuantity() * dataModel.getProduct().getPrice()) + CURRENCY);
 
         return convertView;
+    }
+
+    // View lookup cache
+    private static class ViewHolder {
+        TextView txtNumber;
+        TextView txtName;
+        TextView txtPrice;
     }
 }

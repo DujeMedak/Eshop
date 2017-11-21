@@ -21,6 +21,7 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
     String ref;
     String description;
     String name;
@@ -28,13 +29,6 @@ public class Product implements Parcelable {
 
     public Product(String ref, String name, String description, double price) {
         this.ref = ref;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
-
-    public Product(String name, String description, double price) {
-        this.ref = "";
         this.name = name;
         this.description = description;
         this.price = price;
@@ -49,6 +43,10 @@ public class Product implements Parcelable {
 
     public String getRef() {
         return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     public String getName() {
